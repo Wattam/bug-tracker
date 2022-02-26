@@ -1,7 +1,5 @@
 package com.api.bugtracker.model;
 
-import java.time.LocalDateTime;
-
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -43,9 +41,9 @@ public class Bug {
     @JoinColumn(name = "creator_id", referencedColumnName = "id")
     private User creator;
 
-    private LocalDateTime createdAt;
+    private String createdAt;
 
-    private LocalDateTime updatedAt;
+    private String updatedAt;
 
-    private LocalDateTime closedAt;
+    private String closedAt;
 }

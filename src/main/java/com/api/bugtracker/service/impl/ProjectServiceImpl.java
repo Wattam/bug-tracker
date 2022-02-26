@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.Project;
+import com.api.bugtracker.model.Status;
 import com.api.bugtracker.repository.ProjectRepository;
 import com.api.bugtracker.service.ProjectService;
 
@@ -31,6 +32,7 @@ public class ProjectServiceImpl implements ProjectService {
     @Override
     public Project newProject(Project project) {
 
+        project.setStatus(Status.OPEN);
         return repository.save(project);
     }
 
