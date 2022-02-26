@@ -31,7 +31,6 @@ public class Bug {
 
     private String description;
 
-    @NotNull
     private Status status;
 
     @NotNull

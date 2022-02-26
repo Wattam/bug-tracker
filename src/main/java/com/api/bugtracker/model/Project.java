@@ -29,7 +29,6 @@ public class Project {
 
     private String description;
 
-    @NotNull
     private Status status;
 
     @NotNull
