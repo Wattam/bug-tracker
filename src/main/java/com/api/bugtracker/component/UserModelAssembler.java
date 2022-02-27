@@ -1,5 +1,6 @@
 package com.api.bugtracker.component;
 
+import com.api.bugtracker.controller.UserController;
 import com.api.bugtracker.model.User;
 
 import org.springframework.hateoas.EntityModel;
@@ -14,7 +15,6 @@ public class UserModelAssembler implements RepresentationModelAssembler<User, En
     public EntityModel<User> toModel(User user) {
 
         return EntityModel.of(user,
-                linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel(),
-                linkTo(methodOn(UserController.class).all()).withRel("users"));
+                linkTo(methodOn(UserController.class).one(user.getId())).withSelfRel());
     }
 }
