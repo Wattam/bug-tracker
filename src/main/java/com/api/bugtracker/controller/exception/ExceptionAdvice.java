@@ -11,7 +11,7 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(BugNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String bugNotFoundHandler(BugNotFoundException bnfe) {
 
         return bnfe.getMessage();
@@ -19,7 +19,7 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(ProjectNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String projectNotFoundHandler(ProjectNotFoundException pnfe) {
 
         return pnfe.getMessage();
@@ -27,7 +27,7 @@ public class ExceptionAdvice {
 
     @ResponseBody
     @ExceptionHandler(UserNotFoundException.class)
-    @ResponseStatus(HttpStatus.OK)
+    @ResponseStatus(HttpStatus.NOT_FOUND)
     public String userNotFoundHandler(UserNotFoundException unfe) {
 
         return unfe.getMessage();
