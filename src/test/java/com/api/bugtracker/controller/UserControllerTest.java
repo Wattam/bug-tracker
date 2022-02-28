@@ -10,18 +10,16 @@ import com.api.bugtracker.model.User;
 import com.api.bugtracker.service.UserService;
 import com.google.common.collect.ImmutableList;
 
+import org.json.JSONObject;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.context.SpringBootTest.WebEnvironment;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-
-import net.minidev.json.JSONObject;
 
 import static org.hamcrest.Matchers.is;
 import static org.junit.jupiter.api.Assertions.assertEquals;
@@ -33,7 +31,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-@SpringBootTest(webEnvironment = WebEnvironment.DEFINED_PORT)
+@SpringBootTest
 @AutoConfigureMockMvc
 public class UserControllerTest {
 
@@ -99,7 +97,8 @@ public class UserControllerTest {
 
         mockMvc.perform(get("/users/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
+                .andExpect(result -> assertTrue(
+                        result.getResolvedException() instanceof UserNotFoundException))
                 .andExpect(result -> assertEquals("Could not find user 1",
                         result.getResolvedException().getMessage()));
     }
@@ -111,18 +110,18 @@ public class UserControllerTest {
 
         when(userService.newUser(Mockito.any(User.class))).thenReturn(user);
 
-        JSONObject json = new JSONObject();
-        json.put("name", "name");
-        json.put("username", "username");
-        json.put("email", "email@email");
-        json.put("password", "password");
-        String jsonString = json.toString();
+        String json = new JSONObject()
+                .put("name", "name")
+                .put("username", "username")
+                .put("email", "email@email")
+                .put("password", "password")
+                .toString();
 
         mockMvc.perform(
                 post("/users")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonString))
+                        .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -139,18 +138,18 @@ public class UserControllerTest {
         when(userService.one(Mockito.anyLong())).thenReturn(Optional.of(user));
         when(userService.replaceUser(Mockito.any(User.class), Mockito.anyLong())).thenReturn(user);
 
-        JSONObject json = new JSONObject();
-        json.put("name", "name");
-        json.put("username", "username");
-        json.put("email", "email@email");
-        json.put("password", "password");
-        String jsonString = json.toString();
+        String json = new JSONObject()
+                .put("name", "name")
+                .put("username", "username")
+                .put("email", "email@email")
+                .put("password", "password")
+                .toString();
 
         mockMvc.perform(
                 put("/users/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonString))
+                        .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -162,20 +161,21 @@ public class UserControllerTest {
     @Test
     void shouldNotReplaceUser() throws Exception {
 
-        JSONObject json = new JSONObject();
-        json.put("name", "name");
-        json.put("username", "username");
-        json.put("email", "email@email");
-        json.put("password", "password");
-        String jsonString = json.toString();
+        String json = new JSONObject()
+                .put("name", "name")
+                .put("username", "username")
+                .put("email", "email@email")
+                .put("password", "password")
+                .toString();
 
         mockMvc.perform(
                 put("/users/1")
                         .accept(MediaType.APPLICATION_JSON)
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(jsonString))
+                        .content(json))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
+                .andExpect(result -> assertTrue(
+                        result.getResolvedException() instanceof UserNotFoundException))
                 .andExpect(result -> assertEquals("Could not find user 1",
                         result.getResolvedException().getMessage()));
     }
@@ -196,7 +196,8 @@ public class UserControllerTest {
 
         mockMvc.perform(delete("/users/1").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isNotFound())
-                .andExpect(result -> assertTrue(result.getResolvedException() instanceof UserNotFoundException))
+                .andExpect(result -> assertTrue(
+                        result.getResolvedException() instanceof UserNotFoundException))
                 .andExpect(result -> assertEquals("Could not find user 1",
                         result.getResolvedException().getMessage()));
     }
