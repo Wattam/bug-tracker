@@ -63,8 +63,8 @@ public class BugServiceTest {
         assertEquals("summary1", bugs.get(0).getSummary());
         assertEquals("description1", bugs.get(0).getDescription());
         assertEquals(Status.OPEN, bugs.get(0).getStatus());
-        assertEquals(project, bugs.get(0).getProject());
-        assertEquals(user, bugs.get(0).getCreator());
+        assertEquals(project.getId(), bugs.get(0).getProject().getId());
+        assertEquals(user.getId(), bugs.get(0).getCreator().getId());
         assertEquals("date11", bugs.get(0).getCreatedAt());
         assertEquals("date12", bugs.get(0).getUpdatedAt());
         assertEquals("date13", bugs.get(0).getClosedAt());
@@ -73,8 +73,8 @@ public class BugServiceTest {
         assertEquals("summary2", bugs.get(1).getSummary());
         assertEquals("description2", bugs.get(1).getDescription());
         assertEquals(Status.CLOSED, bugs.get(1).getStatus());
-        assertEquals(project, bugs.get(1).getProject());
-        assertEquals(user, bugs.get(1).getCreator());
+        assertEquals(project.getId(), bugs.get(1).getProject().getId());
+        assertEquals(user.getId(), bugs.get(1).getCreator().getId());
         assertEquals("date21", bugs.get(1).getCreatedAt());
         assertEquals("date22", bugs.get(1).getUpdatedAt());
         assertEquals("date23", bugs.get(1).getClosedAt());
@@ -100,13 +100,12 @@ public class BugServiceTest {
 
         Bug actual = bugService.one(1L).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getSummary(), actual.getSummary());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getProject(), actual.getProject());
-        assertEquals(expected.getCreator(), actual.getCreator());
+        assertEquals(expected.getProject().getId(), actual.getProject().getId());
+        assertEquals(expected.getCreator().getId(), actual.getCreator().getId());
         assertEquals(expected.getCreatedAt(), actual.getCreatedAt());
         assertEquals(expected.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(expected.getClosedAt(), actual.getClosedAt());
@@ -131,13 +130,12 @@ public class BugServiceTest {
 
         Bug actual = bugRepository.findById(expected.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getSummary(), actual.getSummary());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getProject(), actual.getProject());
-        assertEquals(expected.getCreator(), actual.getCreator());
+        assertEquals(expected.getProject().getId(), actual.getProject().getId());
+        assertEquals(expected.getCreator().getId(), actual.getCreator().getId());
         assertEquals(expected.getCreatedAt(), actual.getCreatedAt());
         assertEquals(expected.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(expected.getClosedAt(), actual.getClosedAt());
@@ -159,13 +157,12 @@ public class BugServiceTest {
         bugService.replaceBug(expected, bug.getId());
         Bug actual = bugRepository.findById(bug.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getSummary(), actual.getSummary());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getProject(), actual.getProject());
-        assertEquals(expected.getCreator(), actual.getCreator());
+        assertEquals(expected.getProject().getId(), actual.getProject().getId());
+        assertEquals(expected.getCreator().getId(), actual.getCreator().getId());
         assertEquals(expected.getCreatedAt(), actual.getCreatedAt());
         assertEquals(expected.getUpdatedAt(), actual.getUpdatedAt());
         assertEquals(expected.getClosedAt(), actual.getClosedAt());

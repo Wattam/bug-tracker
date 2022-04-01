@@ -5,9 +5,11 @@ import java.util.stream.Collectors;
 
 import javax.validation.Valid;
 
-import com.api.bugtracker.controller.exception.ProjectNotFoundException;
 import com.api.bugtracker.model.Project;
+import com.api.bugtracker.model.Status;
 import com.api.bugtracker.component.ProjectModelAssembler;
+import com.api.bugtracker.controller.exception.projectException.ProjectClosedException;
+import com.api.bugtracker.controller.exception.projectException.ProjectNotFoundException;
 import com.api.bugtracker.service.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -81,6 +83,20 @@ public class ProjectController {
         projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id));
 
         projectService.deleteProject(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/close")
+    public ResponseEntity<?> closeProject(@PathVariable long id) {
+
+        if (projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id)).getStatus()
+                .equals(Status.CLOSED)) {
+
+            throw new ProjectClosedException(id);
+        }
+
+        projectService.closeProject(id);
 
         return ResponseEntity.noContent().build();
     }

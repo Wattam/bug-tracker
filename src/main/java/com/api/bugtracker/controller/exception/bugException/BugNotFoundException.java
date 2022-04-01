@@ -1,4 +1,4 @@
-package com.api.bugtracker.controller.exception;
+package com.api.bugtracker.controller.exception.bugException;
 
 public class BugNotFoundException extends RuntimeException {
 

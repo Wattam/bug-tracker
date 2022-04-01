@@ -64,7 +64,6 @@ public class UserServiceTest {
 
         User actual = userService.one(1L).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getUsername(), actual.getUsername());
@@ -88,7 +87,6 @@ public class UserServiceTest {
 
         User actual = userRepository.findById(expected.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getUsername(), actual.getUsername());
@@ -108,7 +106,6 @@ public class UserServiceTest {
         userService.replaceUser(expected, user.getId());
         User actual = userRepository.findById(user.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getUsername(), actual.getUsername());
         assertEquals(expected.getEmail(), actual.getEmail());

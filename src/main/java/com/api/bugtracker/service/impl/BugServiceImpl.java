@@ -62,4 +62,12 @@ public class BugServiceImpl implements BugService {
 
         repository.deleteById(id);
     }
+
+    @Override
+    public void closeBug(long id) {
+
+        Bug bug = repository.getById(id);
+        bug.setStatus(Status.CLOSED);
+        repository.save(bug);
+    }
 }

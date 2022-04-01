@@ -16,4 +16,6 @@ public interface ProjectService {
     public Project replaceProject(Project project, long id);
 
     public void deleteProject(long id);
+
+    public void closeProject(long id);
 }

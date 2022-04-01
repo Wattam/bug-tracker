@@ -16,4 +16,6 @@ public interface BugService {
     public Bug replaceBug(Bug bug, long id);
 
     public void deleteBug(long id);
+
+    public void closeBug(long id);
 }

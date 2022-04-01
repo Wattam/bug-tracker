@@ -6,7 +6,7 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.api.bugtracker.component.UserModelAssembler;
-import com.api.bugtracker.controller.exception.UserNotFoundException;
+import com.api.bugtracker.controller.exception.userException.UserNotFoundException;
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.service.UserService;
 

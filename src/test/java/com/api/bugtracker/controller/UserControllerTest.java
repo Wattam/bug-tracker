@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import com.api.bugtracker.controller.exception.UserNotFoundException;
+import com.api.bugtracker.controller.exception.userException.UserNotFoundException;
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.service.UserService;
 import com.google.common.collect.ImmutableList;

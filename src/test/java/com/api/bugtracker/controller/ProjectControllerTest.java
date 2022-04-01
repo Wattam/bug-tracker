@@ -5,7 +5,7 @@ import static org.mockito.Mockito.when;
 import java.util.List;
 import java.util.Optional;
 
-import com.api.bugtracker.controller.exception.ProjectNotFoundException;
+import com.api.bugtracker.controller.exception.projectException.ProjectNotFoundException;
 import com.api.bugtracker.model.Project;
 import com.api.bugtracker.model.Status;
 import com.api.bugtracker.model.User;
@@ -44,10 +44,11 @@ public class ProjectControllerTest {
     @MockBean
     private ProjectService projectService;
 
-    private User user = new User(1L, "name", "username", "email@email", "password");
+    private final User user = new User(1L, "name", "username", "email@email", "password");
 
     @BeforeEach
     public void setUp() {
+
         Mockito.reset(projectService);
     }
 
@@ -128,10 +129,10 @@ public class ProjectControllerTest {
                 .toString();
 
         mockMvc.perform(
-                post("/projects")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
+                        post("/projects")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(projectJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -159,10 +160,10 @@ public class ProjectControllerTest {
                 .toString();
 
         mockMvc.perform(
-                put("/projects/1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
+                        put("/projects/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(projectJson))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -185,10 +186,10 @@ public class ProjectControllerTest {
                 .toString();
 
         mockMvc.perform(
-                put("/projects/1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(projectJson))
+                        put("/projects/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(projectJson))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(
                         result.getResolvedException() instanceof ProjectNotFoundException))

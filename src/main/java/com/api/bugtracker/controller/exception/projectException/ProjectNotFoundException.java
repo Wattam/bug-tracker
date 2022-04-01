@@ -1,4 +1,4 @@
-package com.api.bugtracker.controller.exception;
+package com.api.bugtracker.controller.exception.projectException;
 
 public class ProjectNotFoundException extends RuntimeException {
 

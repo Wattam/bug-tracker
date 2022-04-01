@@ -10,8 +10,10 @@ import java.util.stream.Collectors;
 import javax.validation.Valid;
 
 import com.api.bugtracker.component.BugModelAssembler;
-import com.api.bugtracker.controller.exception.BugNotFoundException;
+import com.api.bugtracker.controller.exception.bugException.BugClosedException;
+import com.api.bugtracker.controller.exception.bugException.BugNotFoundException;
 import com.api.bugtracker.model.Bug;
+import com.api.bugtracker.model.Status;
 import com.api.bugtracker.service.BugService;
 
 import org.springframework.http.HttpStatus;
@@ -81,6 +83,20 @@ public class BugController {
         bugService.one(id).orElseThrow(() -> new BugNotFoundException(id));
 
         bugService.deleteBug(id);
+
+        return ResponseEntity.noContent().build();
+    }
+
+    @PutMapping("/{id}/close")
+    public ResponseEntity<?> closeBug(@PathVariable long id) {
+
+        if (bugService.one(id).orElseThrow(() -> new BugNotFoundException(id)).getStatus()
+                .equals(Status.CLOSED)) {
+
+            throw new BugClosedException(id);
+        }
+
+        bugService.closeBug(id);
 
         return ResponseEntity.noContent().build();
     }

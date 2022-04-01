@@ -53,13 +53,13 @@ public class ProjectServiceTest {
         assertEquals("name1", projects.get(0).getName());
         assertEquals("description1", projects.get(0).getDescription());
         assertEquals(Status.OPEN, projects.get(0).getStatus());
-        assertEquals(user, projects.get(0).getOwner());
+        assertEquals(user.getId(), projects.get(0).getOwner().getId());
 
         assertEquals(2L, projects.get(1).getId());
         assertEquals("name2", projects.get(1).getName());
         assertEquals("description2", projects.get(1).getDescription());
         assertEquals(Status.CLOSED, projects.get(1).getStatus());
-        assertEquals(user, projects.get(1).getOwner());
+        assertEquals(user.getId(), projects.get(1).getOwner().getId());
     }
 
     @Test
@@ -79,12 +79,11 @@ public class ProjectServiceTest {
 
         Project actual = projectService.one(1L).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner(), actual.getOwner());
+        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test
@@ -103,12 +102,11 @@ public class ProjectServiceTest {
 
         Project actual = projectRepository.findById(expected.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner(), actual.getOwner());
+        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test
@@ -123,12 +121,11 @@ public class ProjectServiceTest {
         projectService.replaceProject(expected, project.getId());
         Project actual = projectRepository.findById(project.getId()).get();
 
-        assertEquals(expected, actual);
         assertEquals(expected.getId(), actual.getId());
         assertEquals(expected.getName(), actual.getName());
         assertEquals(expected.getDescription(), actual.getDescription());
         assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner(), actual.getOwner());
+        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test

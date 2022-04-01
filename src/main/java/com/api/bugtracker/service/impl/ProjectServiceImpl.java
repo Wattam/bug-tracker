@@ -48,4 +48,12 @@ public class ProjectServiceImpl implements ProjectService {
 
         repository.deleteById(id);
     }
+
+    @Override
+    public void closeProject(long id) {
+
+        Project project = repository.getById(id);
+        project.setStatus(Status.CLOSED);
+        repository.save(project);
+    }
 }
