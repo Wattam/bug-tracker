@@ -2,7 +2,6 @@ package com.api.bugtracker.service.impl;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.Bug;
@@ -11,6 +10,8 @@ import com.api.bugtracker.repository.BugRepository;
 import com.api.bugtracker.service.BugService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -20,9 +21,9 @@ public class BugServiceImpl implements BugService {
     private BugRepository repository;
 
     @Override
-    public List<Bug> all() {
+    public Page<Bug> all(int page, int size) {
 
-        return repository.findAll();
+        return repository.findAll(PageRequest.of(page, size));
     }
 
     @Override

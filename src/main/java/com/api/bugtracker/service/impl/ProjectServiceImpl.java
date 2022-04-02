@@ -1,6 +1,5 @@
 package com.api.bugtracker.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.Project;
@@ -9,6 +8,8 @@ import com.api.bugtracker.repository.ProjectRepository;
 import com.api.bugtracker.service.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -18,9 +19,9 @@ public class ProjectServiceImpl implements ProjectService {
     private ProjectRepository repository;
 
     @Override
-    public List<Project> all() {
+    public Page<Project> all(int page, int size) {
 
-        return repository.findAll();
+        return repository.findAll(PageRequest.of(page, size));
     }
 
     @Override

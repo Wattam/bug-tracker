@@ -4,14 +4,13 @@ import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
-import java.util.List;
-
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.repository.UserRepository;
 
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
 
 @SpringBootTest
@@ -30,30 +29,33 @@ public class UserServiceTest {
         userRepository.save(new User(1L, "name1", "username1", "email1@email1", "password1"));
         userRepository.save(new User(2L, "name2", "username2", "email2@email2", "password2"));
 
-        List<User> users = userService.all();
+        Page<User> users = userService.all(0, 15);
 
-        assertEquals(2, users.size());
+        assertTrue(users.hasContent());
+        assertEquals(2, users.getTotalElements());
+        assertEquals(2, users.getNumberOfElements());
 
-        assertEquals(1L, users.get(0).getId());
-        assertEquals("name1", users.get(0).getName());
-        assertEquals("username1", users.get(0).getUsername());
-        assertEquals("email1@email1", users.get(0).getEmail());
-        assertEquals("password1", users.get(0).getPassword());
+        assertEquals(1L, users.getContent().get(0).getId());
+        assertEquals("name1", users.getContent().get(0).getName());
+        assertEquals("username1", users.getContent().get(0).getUsername());
+        assertEquals("email1@email1", users.getContent().get(0).getEmail());
+        assertEquals("password1", users.getContent().get(0).getPassword());
 
-        assertEquals(2L, users.get(1).getId());
-        assertEquals("name2", users.get(1).getName());
-        assertEquals("username2", users.get(1).getUsername());
-        assertEquals("email2@email2", users.get(1).getEmail());
-        assertEquals("password2", users.get(1).getPassword());
+        assertEquals(2L, users.getContent().get(1).getId());
+        assertEquals("name2", users.getContent().get(1).getName());
+        assertEquals("username2", users.getContent().get(1).getUsername());
+        assertEquals("email2@email2", users.getContent().get(1).getEmail());
+        assertEquals("password2", users.getContent().get(1).getPassword());
     }
 
     @Test
     void shouldNotReturnAnyUser() {
 
-        List<User> users = userService.all();
+        Page<User> users = userService.all(0, 15);
 
         assertTrue(users.isEmpty());
-        assertEquals(0, users.size());
+        assertEquals(0, users.getTotalElements());
+        assertEquals(0, users.getNumberOfElements());
     }
 
     @Test

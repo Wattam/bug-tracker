@@ -1,6 +1,5 @@
 package com.api.bugtracker.service.impl;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.User;
@@ -8,6 +7,8 @@ import com.api.bugtracker.repository.UserRepository;
 import com.api.bugtracker.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -17,9 +18,9 @@ public class UserServiceImpl implements UserService {
     private UserRepository repository;
 
     @Override
-    public List<User> all() {
+    public Page<User> all(int page, int size) {
 
-        return repository.findAll();
+        return repository.findAll(PageRequest.of(page, size));
     }
 
     @Override

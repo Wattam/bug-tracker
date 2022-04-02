@@ -1,8 +1,5 @@
 package com.api.bugtracker.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import com.api.bugtracker.model.Project;
@@ -13,6 +10,7 @@ import com.api.bugtracker.controller.exception.projectException.ProjectNotFoundE
 import com.api.bugtracker.service.ProjectService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
@@ -25,6 +23,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -40,21 +39,26 @@ public class ProjectController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EntityModel<Project>> all() {
+    public Page<EntityModel<Project>> all(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) {
 
-        return projectService.all().stream().map(projectAssembler::toModel).collect(Collectors.toList());
+        return projectService.all(page, size).map(projectAssembler::toModel);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<Project> one(@PathVariable long id) {
+    public ResponseEntity<EntityModel<Project>> one(@PathVariable long id) {
 
-        return projectAssembler.toModel(
-                projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id)));
+        return ResponseEntity.ok(
+                projectAssembler.toModel(
+                        projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id))
+                )
+        );
     }
 
     @PostMapping
-    public ResponseEntity<?> newProject(@Valid @RequestBody Project project) {
+    public ResponseEntity<EntityModel<Project>> newProject(@Valid @RequestBody Project project) {
 
         EntityModel<Project> projectEM = projectAssembler.toModel(
                 projectService.newProject(project));
@@ -65,7 +69,7 @@ public class ProjectController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> replaceProject(@Valid @RequestBody Project project, @PathVariable long id) {
+    public ResponseEntity<EntityModel<Project>> replaceProject(@Valid @RequestBody Project project, @PathVariable long id) {
 
         projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id));
 
@@ -83,7 +87,6 @@ public class ProjectController {
         projectService.one(id).orElseThrow(() -> new ProjectNotFoundException(id));
 
         projectService.deleteProject(id);
-
         return ResponseEntity.noContent().build();
     }
 
@@ -97,7 +100,6 @@ public class ProjectController {
         }
 
         projectService.closeProject(id);
-
         return ResponseEntity.noContent().build();
     }
 }

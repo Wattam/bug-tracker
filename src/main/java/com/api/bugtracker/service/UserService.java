@@ -1,19 +1,19 @@
 package com.api.bugtracker.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.User;
+import org.springframework.data.domain.Page;
 
 public interface UserService {
 
-    public List<User> all();
+    Page<User> all(int page, int size);
 
-    public Optional<User> one(long id);
+    Optional<User> one(long id);
 
-    public User newUser(User user);
+    User newUser(User user);
 
-    public User replaceUser(User user, long id);
+    User replaceUser(User user, long id);
 
-    public void deleteUser(long id);
+    void deleteUser(long id);
 }

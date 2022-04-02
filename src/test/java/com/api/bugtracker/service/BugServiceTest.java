@@ -1,11 +1,5 @@
 package com.api.bugtracker.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import com.api.bugtracker.model.Bug;
 import com.api.bugtracker.model.Project;
 import com.api.bugtracker.model.Status;
@@ -13,12 +7,16 @@ import com.api.bugtracker.model.User;
 import com.api.bugtracker.repository.BugRepository;
 import com.api.bugtracker.repository.ProjectRepository;
 import com.api.bugtracker.repository.UserRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class BugServiceTest {
@@ -35,8 +33,8 @@ public class BugServiceTest {
     @Autowired
     private ProjectRepository projectRepository;
 
-    private User user = new User(1L, "name1", "username1", "email1@email1", "password1");
-    private Project project = new Project(1L, "name1", "description1", Status.OPEN, user);
+    private final User user = new User(1L, "name1", "username1", "email1@email1", "password1");
+    private final Project project = new Project(1L, "name1", "description1", Status.OPEN, user);
 
     @BeforeEach
     private void setUp() {
@@ -55,38 +53,41 @@ public class BugServiceTest {
         bugRepository.save(
                 new Bug(2L, "summary2", "description2", Status.CLOSED, project, user, "date21", "date22", "date23"));
 
-        List<Bug> bugs = bugService.all();
+        Page<Bug> bugs = bugService.all(0, 15);
 
-        assertEquals(2, bugs.size());
+        assertTrue(bugs.hasContent());
+        assertEquals(2, bugs.getTotalElements());
+        assertEquals(2, bugs.getNumberOfElements());
 
-        assertEquals(1L, bugs.get(0).getId());
-        assertEquals("summary1", bugs.get(0).getSummary());
-        assertEquals("description1", bugs.get(0).getDescription());
-        assertEquals(Status.OPEN, bugs.get(0).getStatus());
-        assertEquals(project.getId(), bugs.get(0).getProject().getId());
-        assertEquals(user.getId(), bugs.get(0).getCreator().getId());
-        assertEquals("date11", bugs.get(0).getCreatedAt());
-        assertEquals("date12", bugs.get(0).getUpdatedAt());
-        assertEquals("date13", bugs.get(0).getClosedAt());
+        assertEquals(1L, bugs.getContent().get(0).getId());
+        assertEquals("summary1", bugs.getContent().get(0).getSummary());
+        assertEquals("description1", bugs.getContent().get(0).getDescription());
+        assertEquals(Status.OPEN, bugs.getContent().get(0).getStatus());
+        assertEquals(project.getId(), bugs.getContent().get(0).getProject().getId());
+        assertEquals(user.getId(), bugs.getContent().get(0).getCreator().getId());
+        assertEquals("date11", bugs.getContent().get(0).getCreatedAt());
+        assertEquals("date12", bugs.getContent().get(0).getUpdatedAt());
+        assertEquals("date13", bugs.getContent().get(0).getClosedAt());
 
-        assertEquals(2L, bugs.get(1).getId());
-        assertEquals("summary2", bugs.get(1).getSummary());
-        assertEquals("description2", bugs.get(1).getDescription());
-        assertEquals(Status.CLOSED, bugs.get(1).getStatus());
-        assertEquals(project.getId(), bugs.get(1).getProject().getId());
-        assertEquals(user.getId(), bugs.get(1).getCreator().getId());
-        assertEquals("date21", bugs.get(1).getCreatedAt());
-        assertEquals("date22", bugs.get(1).getUpdatedAt());
-        assertEquals("date23", bugs.get(1).getClosedAt());
+        assertEquals(2L, bugs.getContent().get(1).getId());
+        assertEquals("summary2", bugs.getContent().get(1).getSummary());
+        assertEquals("description2", bugs.getContent().get(1).getDescription());
+        assertEquals(Status.CLOSED, bugs.getContent().get(1).getStatus());
+        assertEquals(project.getId(), bugs.getContent().get(1).getProject().getId());
+        assertEquals(user.getId(), bugs.getContent().get(1).getCreator().getId());
+        assertEquals("date21", bugs.getContent().get(1).getCreatedAt());
+        assertEquals("date22", bugs.getContent().get(1).getUpdatedAt());
+        assertEquals("date23", bugs.getContent().get(1).getClosedAt());
     }
 
     @Test
     void shouldNotReturnAnyBug() {
 
-        List<Bug> bugs = bugService.all();
+        Page<Bug> bugs = bugService.all(0, 15);
 
         assertTrue(bugs.isEmpty());
-        assertEquals(0, bugs.size());
+        assertEquals(0, bugs.getTotalElements());
+        assertEquals(0, bugs.getNumberOfElements());
     }
 
     @Test

@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.controller.exception.userException.UserNotFoundException;
+import com.api.bugtracker.model.Project;
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.service.UserService;
 import com.google.common.collect.ImmutableList;
@@ -18,6 +19,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -43,6 +47,7 @@ public class UserControllerTest {
 
     @BeforeEach
     public void setUp() {
+
         Mockito.reset(userService);
     }
 
@@ -57,23 +62,25 @@ public class UserControllerTest {
                 .add(user2)
                 .build();
 
-        when(userService.all()).thenReturn(users);
+        Page<User> page = new PageImpl<>(users, PageRequest.of(0, 15), users.size());
+
+        when(userService.all(0, 15)).thenReturn(page);
 
         mockMvc.perform(get("/users").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("length()").value(users.size()))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("name1")))
-                .andExpect(jsonPath("$[0].username", is("username1")))
-                .andExpect(jsonPath("$[0].email", is("email1@email1")))
-                .andExpect(jsonPath("$[0].links.[0].rel", is("self")))
-                .andExpect(jsonPath("$[0].links.[0].href", is("http://localhost/users/1")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].name", is("name2")))
-                .andExpect(jsonPath("$[1].username", is("username2")))
-                .andExpect(jsonPath("$[1].email", is("email2@email2")))
-                .andExpect(jsonPath("$[1].links.[0].rel", is("self")))
-                .andExpect(jsonPath("$[1].links.[0].href", is("http://localhost/users/2")));
+                .andExpect(jsonPath("$.totalElements").value(page.getTotalElements()))
+                .andExpect(jsonPath("$.content.[0].id", is(1)))
+                .andExpect(jsonPath("$.content.[0].name", is("name1")))
+                .andExpect(jsonPath("$.content.[0].username", is("username1")))
+                .andExpect(jsonPath("$.content.[0].email", is("email1@email1")))
+                .andExpect(jsonPath("$.content.[0].links.[0].rel", is("self")))
+                .andExpect(jsonPath("$.content.[0].links.[0].href", is("http://localhost/users/1")))
+                .andExpect(jsonPath("$.content.[1].id", is(2)))
+                .andExpect(jsonPath("$.content.[1].name", is("name2")))
+                .andExpect(jsonPath("$.content.[1].username", is("username2")))
+                .andExpect(jsonPath("$.content.[1].email", is("email2@email2")))
+                .andExpect(jsonPath("$.content.[1].links.[0].rel", is("self")))
+                .andExpect(jsonPath("$.content.[1].links.[0].href", is("http://localhost/users/2")));
     }
 
     @Test
@@ -118,10 +125,10 @@ public class UserControllerTest {
                 .toString();
 
         mockMvc.perform(
-                post("/users")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        post("/users")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -146,10 +153,10 @@ public class UserControllerTest {
                 .toString();
 
         mockMvc.perform(
-                put("/users/1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        put("/users/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.id", is(1)))
                 .andExpect(jsonPath("$.name", is("name")))
@@ -169,10 +176,10 @@ public class UserControllerTest {
                 .toString();
 
         mockMvc.perform(
-                put("/users/1")
-                        .accept(MediaType.APPLICATION_JSON)
-                        .contentType(MediaType.APPLICATION_JSON)
-                        .content(json))
+                        put("/users/1")
+                                .accept(MediaType.APPLICATION_JSON)
+                                .contentType(MediaType.APPLICATION_JSON)
+                                .content(json))
                 .andExpect(status().isNotFound())
                 .andExpect(result -> assertTrue(
                         result.getResolvedException() instanceof UserNotFoundException))

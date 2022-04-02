@@ -1,21 +1,21 @@
 package com.api.bugtracker.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.Project;
+import org.springframework.data.domain.Page;
 
 public interface ProjectService {
 
-    public List<Project> all();
+    Page<Project> all(int page, int size);
 
-    public Optional<Project> one(long id);
+    Optional<Project> one(long id);
 
-    public Project newProject(Project project);
+    Project newProject(Project project);
 
-    public Project replaceProject(Project project, long id);
+    Project replaceProject(Project project, long id);
 
-    public void deleteProject(long id);
+    void deleteProject(long id);
 
-    public void closeProject(long id);
+    void closeProject(long id);
 }

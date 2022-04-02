@@ -1,21 +1,21 @@
 package com.api.bugtracker.service;
 
-import java.util.List;
 import java.util.Optional;
 
 import com.api.bugtracker.model.Bug;
+import org.springframework.data.domain.Page;
 
 public interface BugService {
 
-    public List<Bug> all();
+    Page<Bug> all(int page, int size);
 
-    public Optional<Bug> one(long id);
+    Optional<Bug> one(long id);
 
-    public Bug newBug(Bug bug);
+    Bug newBug(Bug bug);
 
-    public Bug replaceBug(Bug bug, long id);
+    Bug replaceBug(Bug bug, long id);
 
-    public void deleteBug(long id);
+    void deleteBug(long id);
 
-    public void closeBug(long id);
+    void closeBug(long id);
 }

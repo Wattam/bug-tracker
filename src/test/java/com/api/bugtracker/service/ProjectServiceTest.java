@@ -1,22 +1,20 @@
 package com.api.bugtracker.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
-import java.util.List;
-
 import com.api.bugtracker.model.Project;
 import com.api.bugtracker.model.Status;
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.repository.ProjectRepository;
 import com.api.bugtracker.repository.UserRepository;
-
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
+
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class ProjectServiceTest {
@@ -30,7 +28,7 @@ public class ProjectServiceTest {
     @Autowired
     private UserRepository userRepository;
 
-    private User user = new User(1L, "name1", "username1", "email1@email1", "password1");
+    private final User user = new User(1L, "name1", "username1", "email1@email1", "password1");
 
     @BeforeEach
     private void setUp() {
@@ -45,30 +43,33 @@ public class ProjectServiceTest {
         projectRepository.save(new Project(1L, "name1", "description1", Status.OPEN, user));
         projectRepository.save(new Project(2L, "name2", "description2", Status.CLOSED, user));
 
-        List<Project> projects = projectService.all();
+        Page<Project> projects = projectService.all(0, 15);
 
-        assertEquals(2, projects.size());
+        assertTrue(projects.hasContent());
+        assertEquals(2, projects.getTotalElements());
+        assertEquals(2, projects.getNumberOfElements());
 
-        assertEquals(1L, projects.get(0).getId());
-        assertEquals("name1", projects.get(0).getName());
-        assertEquals("description1", projects.get(0).getDescription());
-        assertEquals(Status.OPEN, projects.get(0).getStatus());
-        assertEquals(user.getId(), projects.get(0).getOwner().getId());
+        assertEquals(1L, projects.getContent().get(0).getId());
+        assertEquals("name1", projects.getContent().get(0).getName());
+        assertEquals("description1", projects.getContent().get(0).getDescription());
+        assertEquals(Status.OPEN, projects.getContent().get(0).getStatus());
+        assertEquals(user.getId(), projects.getContent().get(0).getOwner().getId());
 
-        assertEquals(2L, projects.get(1).getId());
-        assertEquals("name2", projects.get(1).getName());
-        assertEquals("description2", projects.get(1).getDescription());
-        assertEquals(Status.CLOSED, projects.get(1).getStatus());
-        assertEquals(user.getId(), projects.get(1).getOwner().getId());
+        assertEquals(2L, projects.getContent().get(1).getId());
+        assertEquals("name2", projects.getContent().get(1).getName());
+        assertEquals("description2", projects.getContent().get(1).getDescription());
+        assertEquals(Status.CLOSED, projects.getContent().get(1).getStatus());
+        assertEquals(user.getId(), projects.getContent().get(1).getOwner().getId());
     }
 
     @Test
     void shouldNotReturnAnyProject() {
 
-        List<Project> projects = projectService.all();
+        Page<Project> projects = projectService.all(0, 15);
 
         assertTrue(projects.isEmpty());
-        assertEquals(0, projects.size());
+        assertEquals(0, projects.getTotalElements());
+        assertEquals(0, projects.getNumberOfElements());
     }
 
     @Test

@@ -21,6 +21,9 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageImpl;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
@@ -57,31 +60,34 @@ public class ProjectControllerTest {
 
         Project project1 = new Project(1L, "name1", "description1", Status.OPEN, user);
         Project project2 = new Project(2L, "name2", "description2", Status.CLOSED, user);
+
         List<Project> projects = ImmutableList
                 .<Project>builder()
                 .add(project1)
                 .add(project2)
                 .build();
 
-        when(projectService.all()).thenReturn(projects);
+        Page<Project> page = new PageImpl<>(projects, PageRequest.of(0, 15), projects.size());
+
+        when(projectService.all(0, 15)).thenReturn(page);
 
         mockMvc.perform(get("/projects").accept(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
-                .andExpect(jsonPath("length()").value(projects.size()))
-                .andExpect(jsonPath("$[0].id", is(1)))
-                .andExpect(jsonPath("$[0].name", is("name1")))
-                .andExpect(jsonPath("$[0].description", is("description1")))
-                .andExpect(jsonPath("$[0].status", is("OPEN")))
-                .andExpect(jsonPath("$[0].owner.id", is(1)))
-                .andExpect(jsonPath("$[0].links.[0].rel", is("self")))
-                .andExpect(jsonPath("$[0].links.[0].href", is("http://localhost/projects/1")))
-                .andExpect(jsonPath("$[1].id", is(2)))
-                .andExpect(jsonPath("$[1].name", is("name2")))
-                .andExpect(jsonPath("$[1].description", is("description2")))
-                .andExpect(jsonPath("$[1].status", is("CLOSED")))
-                .andExpect(jsonPath("$[1].owner.id", is(1)))
-                .andExpect(jsonPath("$[1].links.[0].rel", is("self")))
-                .andExpect(jsonPath("$[1].links.[0].href", is("http://localhost/projects/2")));
+                .andExpect(jsonPath("$.totalElements").value(page.getTotalElements()))
+                .andExpect(jsonPath("$.content.[0].id", is(1)))
+                .andExpect(jsonPath("$.content.[0].name", is("name1")))
+                .andExpect(jsonPath("$.content.[0].description", is("description1")))
+                .andExpect(jsonPath("$.content.[0].status", is("OPEN")))
+                .andExpect(jsonPath("$.content.[0].owner.id", is(1)))
+                .andExpect(jsonPath("$.content.[0].links.[0].rel", is("self")))
+                .andExpect(jsonPath("$.content.[0].links.[0].href", is("http://localhost/projects/1")))
+                .andExpect(jsonPath("$.content.[1].id", is(2)))
+                .andExpect(jsonPath("$.content.[1].name", is("name2")))
+                .andExpect(jsonPath("$.content.[1].description", is("description2")))
+                .andExpect(jsonPath("$.content.[1].status", is("CLOSED")))
+                .andExpect(jsonPath("$.content.[1].owner.id", is(1)))
+                .andExpect(jsonPath("$.content.[1].links.[0].rel", is("self")))
+                .andExpect(jsonPath("$.content.[1].links.[0].href", is("http://localhost/projects/2")));
     }
 
     @Test

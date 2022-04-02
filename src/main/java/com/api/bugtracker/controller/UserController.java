@@ -1,8 +1,5 @@
 package com.api.bugtracker.controller;
 
-import java.util.List;
-import java.util.stream.Collectors;
-
 import javax.validation.Valid;
 
 import com.api.bugtracker.component.UserModelAssembler;
@@ -11,6 +8,7 @@ import com.api.bugtracker.model.User;
 import com.api.bugtracker.service.UserService;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Page;
 import org.springframework.hateoas.EntityModel;
 import org.springframework.hateoas.IanaLinkRelations;
 
@@ -23,6 +21,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -38,21 +37,26 @@ public class UserController {
 
     @GetMapping
     @ResponseStatus(HttpStatus.OK)
-    public List<EntityModel<User>> all() {
+    public Page<EntityModel<User>> all(
+            @RequestParam(value = "page", defaultValue = "0") int page,
+            @RequestParam(value = "size", defaultValue = "15") int size
+    ) {
 
-        return userService.all().stream().map(userAssembler::toModel).collect(Collectors.toList());
+        return userService.all(page, size).map(userAssembler::toModel);
     }
 
     @GetMapping("/{id}")
-    @ResponseStatus(HttpStatus.OK)
-    public EntityModel<User> one(@PathVariable long id) {
+    public ResponseEntity<EntityModel<User>> one(@PathVariable long id) {
 
-        return userAssembler.toModel(
-                userService.one(id).orElseThrow(() -> new UserNotFoundException(id)));
+        return ResponseEntity.ok(
+                userAssembler.toModel(
+                        userService.one(id).orElseThrow(() -> new UserNotFoundException(id))
+                )
+        );
     }
 
     @PostMapping
-    public ResponseEntity<?> newUser(@Valid @RequestBody User user) {
+    public ResponseEntity<EntityModel<User>> newUser(@Valid @RequestBody User user) {
 
         EntityModel<User> userEM = userAssembler.toModel(
                 userService.newUser(user));
@@ -63,7 +67,7 @@ public class UserController {
     }
 
     @PutMapping("/{id}")
-    public ResponseEntity<?> replaceUser(@Valid @RequestBody User user, @PathVariable long id) {
+    public ResponseEntity<EntityModel<User>> replaceUser(@Valid @RequestBody User user, @PathVariable long id) {
 
         userService.one(id).orElseThrow(() -> new UserNotFoundException(id));
 
@@ -81,7 +85,6 @@ public class UserController {
         userService.one(id).orElseThrow(() -> new UserNotFoundException(id));
 
         userService.deleteUser(id);
-
         return ResponseEntity.noContent().build();
     }
 }
