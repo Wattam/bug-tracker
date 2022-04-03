@@ -5,16 +5,13 @@ import com.api.bugtracker.model.Status;
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.repository.ProjectRepository;
 import com.api.bugtracker.repository.UserRepository;
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
-
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
 
 @SpringBootTest
 public class ProjectServiceTest {
@@ -45,21 +42,21 @@ public class ProjectServiceTest {
 
         Page<Project> projects = projectService.all(0, 15);
 
-        assertTrue(projects.hasContent());
-        assertEquals(2, projects.getTotalElements());
-        assertEquals(2, projects.getNumberOfElements());
+        Assertions.assertTrue(projects.hasContent());
+        Assertions.assertEquals(2, projects.getTotalElements());
+        Assertions.assertEquals(2, projects.getNumberOfElements());
 
-        assertEquals(1L, projects.getContent().get(0).getId());
-        assertEquals("name1", projects.getContent().get(0).getName());
-        assertEquals("description1", projects.getContent().get(0).getDescription());
-        assertEquals(Status.OPEN, projects.getContent().get(0).getStatus());
-        assertEquals(user.getId(), projects.getContent().get(0).getOwner().getId());
+        Assertions.assertEquals(1L, projects.getContent().get(0).getId());
+        Assertions.assertEquals("name1", projects.getContent().get(0).getName());
+        Assertions.assertEquals("description1", projects.getContent().get(0).getDescription());
+        Assertions.assertEquals(Status.OPEN, projects.getContent().get(0).getStatus());
+        Assertions.assertEquals(user.getId(), projects.getContent().get(0).getOwner().getId());
 
-        assertEquals(2L, projects.getContent().get(1).getId());
-        assertEquals("name2", projects.getContent().get(1).getName());
-        assertEquals("description2", projects.getContent().get(1).getDescription());
-        assertEquals(Status.CLOSED, projects.getContent().get(1).getStatus());
-        assertEquals(user.getId(), projects.getContent().get(1).getOwner().getId());
+        Assertions.assertEquals(2L, projects.getContent().get(1).getId());
+        Assertions.assertEquals("name2", projects.getContent().get(1).getName());
+        Assertions.assertEquals("description2", projects.getContent().get(1).getDescription());
+        Assertions.assertEquals(Status.CLOSED, projects.getContent().get(1).getStatus());
+        Assertions.assertEquals(user.getId(), projects.getContent().get(1).getOwner().getId());
     }
 
     @Test
@@ -67,9 +64,9 @@ public class ProjectServiceTest {
 
         Page<Project> projects = projectService.all(0, 15);
 
-        assertTrue(projects.isEmpty());
-        assertEquals(0, projects.getTotalElements());
-        assertEquals(0, projects.getNumberOfElements());
+        Assertions.assertTrue(projects.isEmpty());
+        Assertions.assertEquals(0, projects.getTotalElements());
+        Assertions.assertEquals(0, projects.getNumberOfElements());
     }
 
     @Test
@@ -80,18 +77,18 @@ public class ProjectServiceTest {
 
         Project actual = projectService.one(1L).get();
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getDescription(), actual.getDescription());
-        assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(expected.getStatus(), actual.getStatus());
+        Assertions.assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test
     void shouldNotReturnOneProject() {
 
-        assertTrue(projectService.one(1L).isEmpty());
-        assertFalse(projectService.one(1L).isPresent());
+        Assertions.assertTrue(projectService.one(1L).isEmpty());
+        Assertions.assertFalse(projectService.one(1L).isPresent());
     }
 
     @Test
@@ -103,11 +100,11 @@ public class ProjectServiceTest {
 
         Project actual = projectRepository.findById(expected.getId()).get();
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getDescription(), actual.getDescription());
-        assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(expected.getStatus(), actual.getStatus());
+        Assertions.assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test
@@ -122,11 +119,11 @@ public class ProjectServiceTest {
         projectService.replaceProject(expected, project.getId());
         Project actual = projectRepository.findById(project.getId()).get();
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getDescription(), actual.getDescription());
-        assertEquals(expected.getStatus(), actual.getStatus());
-        assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getDescription(), actual.getDescription());
+        Assertions.assertEquals(expected.getStatus(), actual.getStatus());
+        Assertions.assertEquals(expected.getOwner().getId(), actual.getOwner().getId());
     }
 
     @Test
@@ -138,7 +135,7 @@ public class ProjectServiceTest {
 
         projectService.deleteProject(project.getId());
 
-        assertTrue(projectRepository.findById(project.getId()).isEmpty());
-        assertFalse(projectRepository.findById(project.getId()).isPresent());
+        Assertions.assertTrue(projectRepository.findById(project.getId()).isEmpty());
+        Assertions.assertFalse(projectRepository.findById(project.getId()).isPresent());
     }
 }

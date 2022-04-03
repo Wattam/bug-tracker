@@ -1,12 +1,8 @@
 package com.api.bugtracker.service;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertTrue;
-
 import com.api.bugtracker.model.User;
 import com.api.bugtracker.repository.UserRepository;
-
+import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -31,21 +27,21 @@ public class UserServiceTest {
 
         Page<User> users = userService.all(0, 15);
 
-        assertTrue(users.hasContent());
-        assertEquals(2, users.getTotalElements());
-        assertEquals(2, users.getNumberOfElements());
+        Assertions.assertTrue(users.hasContent());
+        Assertions.assertEquals(2, users.getTotalElements());
+        Assertions.assertEquals(2, users.getNumberOfElements());
 
-        assertEquals(1L, users.getContent().get(0).getId());
-        assertEquals("name1", users.getContent().get(0).getName());
-        assertEquals("username1", users.getContent().get(0).getUsername());
-        assertEquals("email1@email1", users.getContent().get(0).getEmail());
-        assertEquals("password1", users.getContent().get(0).getPassword());
+        Assertions.assertEquals(1L, users.getContent().get(0).getId());
+        Assertions.assertEquals("name1", users.getContent().get(0).getName());
+        Assertions.assertEquals("username1", users.getContent().get(0).getUsername());
+        Assertions.assertEquals("email1@email1", users.getContent().get(0).getEmail());
+        Assertions.assertEquals("password1", users.getContent().get(0).getPassword());
 
-        assertEquals(2L, users.getContent().get(1).getId());
-        assertEquals("name2", users.getContent().get(1).getName());
-        assertEquals("username2", users.getContent().get(1).getUsername());
-        assertEquals("email2@email2", users.getContent().get(1).getEmail());
-        assertEquals("password2", users.getContent().get(1).getPassword());
+        Assertions.assertEquals(2L, users.getContent().get(1).getId());
+        Assertions.assertEquals("name2", users.getContent().get(1).getName());
+        Assertions.assertEquals("username2", users.getContent().get(1).getUsername());
+        Assertions.assertEquals("email2@email2", users.getContent().get(1).getEmail());
+        Assertions.assertEquals("password2", users.getContent().get(1).getPassword());
     }
 
     @Test
@@ -53,9 +49,9 @@ public class UserServiceTest {
 
         Page<User> users = userService.all(0, 15);
 
-        assertTrue(users.isEmpty());
-        assertEquals(0, users.getTotalElements());
-        assertEquals(0, users.getNumberOfElements());
+        Assertions.assertTrue(users.isEmpty());
+        Assertions.assertEquals(0, users.getTotalElements());
+        Assertions.assertEquals(0, users.getNumberOfElements());
     }
 
     @Test
@@ -66,18 +62,18 @@ public class UserServiceTest {
 
         User actual = userService.one(1L).get();
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getUsername(), actual.getUsername());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getPassword(), actual.getPassword());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getUsername(), actual.getUsername());
+        Assertions.assertEquals(expected.getEmail(), actual.getEmail());
+        Assertions.assertEquals(expected.getPassword(), actual.getPassword());
     }
 
     @Test
     void shouldNotReturnOneUser() {
 
-        assertTrue(userService.one(1L).isEmpty());
-        assertFalse(userService.one(1L).isPresent());
+        Assertions.assertTrue(userService.one(1L).isEmpty());
+        Assertions.assertFalse(userService.one(1L).isPresent());
     }
 
     @Test
@@ -89,11 +85,11 @@ public class UserServiceTest {
 
         User actual = userRepository.findById(expected.getId()).get();
 
-        assertEquals(expected.getId(), actual.getId());
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getUsername(), actual.getUsername());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getPassword(), actual.getPassword());
+        Assertions.assertEquals(expected.getId(), actual.getId());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getUsername(), actual.getUsername());
+        Assertions.assertEquals(expected.getEmail(), actual.getEmail());
+        Assertions.assertEquals(expected.getPassword(), actual.getPassword());
     }
 
     @Test
@@ -108,10 +104,10 @@ public class UserServiceTest {
         userService.replaceUser(expected, user.getId());
         User actual = userRepository.findById(user.getId()).get();
 
-        assertEquals(expected.getName(), actual.getName());
-        assertEquals(expected.getUsername(), actual.getUsername());
-        assertEquals(expected.getEmail(), actual.getEmail());
-        assertEquals(expected.getPassword(), actual.getPassword());
+        Assertions.assertEquals(expected.getName(), actual.getName());
+        Assertions.assertEquals(expected.getUsername(), actual.getUsername());
+        Assertions.assertEquals(expected.getEmail(), actual.getEmail());
+        Assertions.assertEquals(expected.getPassword(), actual.getPassword());
     }
 
     @Test
@@ -123,7 +119,7 @@ public class UserServiceTest {
 
         userService.deleteUser(user.getId());
 
-        assertTrue(userRepository.findById(user.getId()).isEmpty());
-        assertFalse(userRepository.findById(user.getId()).isPresent());
+        Assertions.assertTrue(userRepository.findById(user.getId()).isEmpty());
+        Assertions.assertFalse(userRepository.findById(user.getId()).isPresent());
     }
 }
