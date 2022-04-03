@@ -12,6 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class ProjectServiceTest {
@@ -137,5 +138,21 @@ public class ProjectServiceTest {
 
         Assertions.assertTrue(projectRepository.findById(project.getId()).isEmpty());
         Assertions.assertFalse(projectRepository.findById(project.getId()).isPresent());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    void shouldCloseProject() {
+
+        Project project = new Project(1L, "name", "description", Status.OPEN, user);
+        project = projectRepository.save(project);
+
+        projectService.closeProject(project.getId());
+
+        Assertions.assertEquals(
+                Status.CLOSED,
+                projectRepository.findById(project.getId()).get().getStatus()
+        );
     }
 }

@@ -14,6 +14,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.data.domain.Page;
 import org.springframework.test.annotation.DirtiesContext;
+import org.springframework.transaction.annotation.Transactional;
 
 @SpringBootTest
 public class BugServiceTest {
@@ -37,13 +38,12 @@ public class BugServiceTest {
     private void setUp() {
 
         userRepository.save(user);
+        projectRepository.save(project);
     }
 
     @Test
     @DirtiesContext
     void shouldReturnAllBugs() {
-
-        projectRepository.save(project);
 
         bugRepository.save(
                 new Bug(1L, "summary1", "description1", Status.OPEN, project, user, "date11", "date12", "date13"));
@@ -91,8 +91,6 @@ public class BugServiceTest {
     @DirtiesContext
     void shouldReturnOneBug() {
 
-        projectRepository.save(project);
-
         Bug expected = bugRepository
                 .save(new Bug(1L, "summary", "description", Status.OPEN, project, user, "date1", "date2", "date3"));
 
@@ -120,8 +118,6 @@ public class BugServiceTest {
     @DirtiesContext
     void shouldCreateNewBug() {
 
-        projectRepository.save(project);
-
         Bug expected = bugRepository
                 .save(new Bug(1L, "summary", "description", Status.OPEN, project, user, "date1", "date2", "date3"));
         expected = bugService.newBug(expected);
@@ -142,8 +138,6 @@ public class BugServiceTest {
     @Test
     @DirtiesContext
     void shouldReplaceBug() {
-
-        projectRepository.save(project);
 
         Bug bug = bugRepository
                 .save(new Bug(1L, "summary", "description", Status.OPEN, project, user, "date1", "date2", "date3"));
@@ -170,8 +164,6 @@ public class BugServiceTest {
     @DirtiesContext
     void shouldDeleteBug() {
 
-        projectRepository.save(project);
-
         Bug bug = new Bug(1L, "summary", "description", Status.OPEN, project, user, "date1", "date2", "date3");
         bug = bugRepository.save(bug);
 
@@ -179,5 +171,21 @@ public class BugServiceTest {
 
         Assertions.assertTrue(bugRepository.findById(bug.getId()).isEmpty());
         Assertions.assertFalse(bugRepository.findById(bug.getId()).isPresent());
+    }
+
+    @Test
+    @DirtiesContext
+    @Transactional
+    void shouldCloseBug() {
+
+        Bug bug = new Bug(1L, "summary", "description", Status.OPEN, project, user, "date1", "date2", "date3");
+        bug = bugRepository.save(bug);
+
+        bugService.closeBug(bug.getId());
+
+        Assertions.assertEquals(
+                Status.CLOSED,
+                bugRepository.findById(bug.getId()).get().getStatus()
+        );
     }
 }
